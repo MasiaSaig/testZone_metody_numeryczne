@@ -20,7 +20,7 @@ Matrix::Matrix(int rows, int cols, int precision) :
         _matrix.push_back(row);
     }
 }
-Matrix::Matrix(Matrix& matrix) : 
+Matrix::Matrix(const Matrix& matrix) : 
     _rows{matrix._rows}, 
     _columns{matrix._columns}, 
     _output_precision{matrix._output_precision}
@@ -28,7 +28,7 @@ Matrix::Matrix(Matrix& matrix) :
     _matrix.insert(_matrix.begin(), matrix._matrix.begin(), matrix._matrix.end());
 }
 
-Matrix& Matrix::operator= (Matrix& obj) {
+Matrix& Matrix::operator= (const Matrix& obj) {
     if (this != &obj) {
         _rows = obj._rows;
         _columns = obj._columns;
@@ -82,13 +82,30 @@ const std::vector<double>& Matrix::operator[] (int idx) const {
     return _matrix.at(idx);
 }
 
-double Matrix::getRows() const { return _rows; }
-double Matrix::getColumns() const { return _columns; }
+
+const double Matrix::getMaxElement() const {
+    double max = _matrix[0][0];
+    for (int i = 0; i < _rows; ++i) {
+        for (int j = 0; j < _columns; ++j) {
+            if (max < _matrix[i][j]) max = _matrix[i][j];
+        }
+    }
+    return max;
+}
+
 
 void Matrix::zeroOut() {
     for (int i = 0; i < _rows; ++i) {
         for (int j = 0; j < _columns; ++j) {
             _matrix[i][j] = 0;
+        }
+    }
+}
+void Matrix::setToUnitMatrix() {
+    for (int i = 0; i < _rows; ++i) {
+        for (int j = 0; j < _columns; ++j) {
+            if (i == j) _matrix[i][j] = 1;
+            else _matrix[i][j] = 0;
         }
     }
 }
@@ -99,22 +116,23 @@ void Matrix::clear() {
     _matrix.clear();
 }
 
-void Matrix::eliminacjaGaussaJordana(double c[], double y[]) {
+void Matrix::eliminacjaGaussaJordana(std::vector<double>& c, std::vector<double> y) const {
+    Matrix A = *this;
     double l, w;
     for (int k = 0; k < _rows; ++k) {
-        l = _matrix[k][k];
-        // podzielenie wiersza przez warto�� na diagonali
+        l = A[k][k];
+        // podzielenie wiersza przez wartosc na diagonali
         for (int j = k; j < _columns; ++j) {
-            _matrix[k][j] /= l;
+            A[k][j] /= l;
         }
         y[k] /= l;
         // odejmowanie wierszy
         for (int i = 0; i < _rows; ++i) {
             if (i == k)
                 continue;
-            w = _matrix[i][k];
+            w = A[i][k];
             for (int j = k; j < _columns; ++j) {
-                _matrix[i][j] -= _matrix[k][j] * w;
+                A[i][j] -= A[k][j] * w;
             }
             y[i] = y[i] - y[k] * w;
         }
@@ -122,39 +140,32 @@ void Matrix::eliminacjaGaussaJordana(double c[], double y[]) {
     for (int i = 0; i < _rows; ++i) {
         c[i] = y[i];
     }
-    showSimpleEquation(*this, y);
+    //showSimpleEquation(*this, y);
 }
-double Matrix::rozkladLU(Matrix& l, Matrix& u) const {
-    Matrix L(_rows, _columns);
-    Matrix U(_rows, _columns);
+double Matrix::rozkladLU(Matrix& L, Matrix& U) const {
+    // skopiowanie macierzy
+    U = *this;
+    L = *this;
     L.zeroOut();
-    U.zeroOut();
     for (int i = 0; i < _rows; ++i) { L[i][i] = 1; }
-    int i, j, k;
-    double sum;
-    for (j = 0; j < _columns; j++)
-    {
-        for (i = 0; i <= j; i++)
-        {
-            sum = 0;
-            for (k = 0; k < i; k++) sum += L[i][k] * U[k][j];
-            U[i][j] = _matrix[i][j] - sum;
-        }
-        for (i = j + 1; i < _rows; i++)
-        {
-            sum = 0;
-            for (k = 0; k < j; k++) sum += L[i][k] * U[k][j];
-            if (U[j][j]) L[i][j] = (_matrix[i][j] - sum) / U[j][j];
+
+    for (int k = 0; k < _rows; ++k) {
+        for (int i = k + 1; i < _rows; ++i) {
+            double l = U[i][k] / U[k][k];
+            L[i][k] = l;    // wyrazy macierz L, to obliczone wsółczynniki l_ik=a_ik/a_kk
+            for (int j = 0; j < _columns; ++j) {
+                // odejmujemy pierwszy wiersz pomnożony przez l od kolejnych wierszy
+                U[i][j] = U[i][j] - U[k][j] * l;
+            }
         }
     }
-    l = L;
-    u = U;
     double determinant = 1;
-    for (i = 0; i < _rows; ++i) {
-        determinant *= u[i][i];
+    for (int i = 0; i < _rows; ++i) {
+        determinant *= U[i][i];
     }
     return determinant;
 }
+    
 
 void Matrix::showSimpleEquation(const Matrix& matrix_a, const Matrix& matrix_b, char sign, const Matrix& matrix_result) {
     int rows = matrix_a._rows;

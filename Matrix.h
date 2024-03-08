@@ -9,7 +9,7 @@ class Matrix {
 public:
 	//~Matrix();
 	Matrix(int rows=0, int cols=0,  int precision=5);
-	Matrix(Matrix& matrix);
+	Matrix(const Matrix& matrix);
 	template <size_t r, size_t c>
 	Matrix(const double (&array)[r][c]) : Matrix(r,c) {
 		*this = array;
@@ -24,7 +24,7 @@ public:
 		}
 		return *this;
 	}
-	Matrix& operator= (Matrix& matrix_a);
+	Matrix& operator= (const Matrix& matrix_a);
 	Matrix operator+ (const Matrix& matrix_a);
 	Matrix operator- (const Matrix& matrix_a);
 	Matrix operator* (const Matrix& matrix_a);
@@ -32,15 +32,16 @@ public:
 	std::vector<double>& operator[] (int idx);
 	const std::vector<double>& operator[] (int idx) const;
 	
-	inline double getRows() const;
-	inline double getColumns() const;
+	inline const double getRows() const { return _rows; }	//nie trzeba dodawaæ inline
+	inline const double getColumns() const { return _columns; }
+	const double getMaxElement() const;
 
 	void zeroOut();
+	void setToUnitMatrix();
 	void clear();
 
-	void eliminacjaGaussaJordana(double c[], double y[]);
-	// zwraca wyznacznik macierzy
-	double rozkladLU(Matrix& l, Matrix& u) const;
+	void eliminacjaGaussaJordana(std::vector<double>& c, std::vector<double> y) const;
+	double rozkladLU(Matrix& L, Matrix& U) const; // zwraca wyznacznik macierzy
 
 	static void showSimpleEquation(const Matrix& matrix_a, const Matrix& matrix_b, char sign, const Matrix& matrix_result);
 	static void showSimpleEquation(const Matrix& matrix_a, const double y[], const double c[]=nullptr);
