@@ -1,5 +1,6 @@
 #include "Matrix.h"
 #include <iostream>
+#include <iomanip>
 using namespace std;
 
 #define N 4
@@ -17,12 +18,14 @@ int main(){
 	double wyznacznik_A = A.rozkladLU(L, U);
 	cout << "Macierz A: \n" << A;
 	cout << "Macierz L: \n" << L;
+	L.showInLatexForm();
 	cout << "Macierz U: \n" << U;
+	U.showInLatexForm();
 	cout << "Wyznacznik macierzy A, rowna sie " << wyznacznik_A << '.' << endl;
 
 	// obliczenie macierzy A^(-1)
 	// ustawianie wektorów x1, x2, x3, ...
-	// X - to będzie macierz odwrotności
+	// X - będzie macierzą odwrotności
 	Matrix X = A;
 	X.setToUnitMatrix();
 
@@ -34,7 +37,14 @@ int main(){
 		x_o[i] = 1;
 		A.eliminacjaGaussaJordana(X[i], x_o);
 	}
-	cout << X;	// wypisuje macierz odwrotności
+	// w macierzy X, poziomo są wiersze, a pionowo kolumny, dlatego trzeba ją 'obrócić' podczas wypisywania
+	for (int j = 0; j < X.getColumns(); ++j) {
+		cout << "|";
+		for (int i = 0; i < X.getRows(); ++i) {
+			cout << setw(X.getPrecision()) << X[i][j];
+		}
+		cout << "|" << endl;
+	}
 
 	// wskaźnik uwarunkowania macierzy
 	// dla normy: ||A|| = max(a_ij) - oznacza to, największy wyraz w macierzy

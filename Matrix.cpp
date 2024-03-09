@@ -218,10 +218,11 @@ void Matrix::showSimpleEquation(const Matrix& matrix_a, const double y[], const 
 void Matrix::showInLatexForm() {
     for (int i = 0; i < _rows; ++i) {
         for (int j = 0; j < _columns; ++j) {
-            cout << _matrix[i][i] << " & ";
+            cout << _matrix[i][j] << " & ";
         }
-        cout << "\\" << endl;
+        cout << "\\\\" << endl;
     }
+    cout << endl;
 }
 std::ostream& operator<< (std::ostream& stream, const Matrix& matrix) {
     for (int i = 0; i < matrix._rows; ++i) {

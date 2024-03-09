@@ -34,6 +34,7 @@ public:
 	
 	inline const double getRows() const { return _rows; }	//nie trzeba dodawać inline
 	inline const double getColumns() const { return _columns; }
+	inline const double getPrecision() const { return _output_precision; }
 	const double getMaxElement() const;
 
 	void zeroOut();
