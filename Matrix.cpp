@@ -32,6 +32,7 @@ Matrix& Matrix::operator= (const Matrix& obj) {
     if (this != &obj) {
         _rows = obj._rows;
         _columns = obj._columns;
+        _output_precision = obj._output_precision;
         _matrix.insert(_matrix.begin(), obj._matrix.begin(), obj._matrix.end());
     }
 	return *this;
@@ -214,7 +215,14 @@ void Matrix::showSimpleEquation(const Matrix& matrix_a, const double y[], const 
     }
     cout << endl;
 }
-
+void Matrix::showInLatexForm() {
+    for (int i = 0; i < _rows; ++i) {
+        for (int j = 0; j < _columns; ++j) {
+            cout << _matrix[i][i] << " & ";
+        }
+        cout << "\\" << endl;
+    }
+}
 std::ostream& operator<< (std::ostream& stream, const Matrix& matrix) {
     for (int i = 0; i < matrix._rows; ++i) {
         stream << "|";

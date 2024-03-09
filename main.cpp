@@ -2,10 +2,16 @@
 #include <iostream>
 using namespace std;
 
+#define N 4
+
 int main(){
-	Matrix A({{1,2,3},
-			  {4,5,6},
-			  {7,8,5}});
+	Matrix A(N, N, 10);
+	for (int i = 0; i < A.getRows(); ++i) {
+		for (int j = 0; j < A.getColumns(); ++j) {
+			A[i][j] = static_cast<double>(1) / (i + j + 2);
+		}
+	}
+	cout << A;
 	
 	Matrix L, U;
 	double wyznacznik_A = A.rozkladLU(L, U);
@@ -34,7 +40,7 @@ int main(){
 	// dla normy: ||A|| = max(a_ij) - oznacza to, największy wyraz w macierzy
 	// wsk_uwarunk = ||A|| * ||A^(-1)||
 	double wsk_uwarunkowania = A.getMaxElement() * X.getMaxElement();
-	cout << "Wskaznik uwarunkowania macierzy A, równa sie " << wsk_uwarunkowania << ".\n";
+	cout << "Wskaznik uwarunkowania macierzy A, rowna sie " << wsk_uwarunkowania << ".\n";
 
 	return 0;
 }

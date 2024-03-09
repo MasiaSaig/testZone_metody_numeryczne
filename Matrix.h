@@ -32,7 +32,7 @@ public:
 	std::vector<double>& operator[] (int idx);
 	const std::vector<double>& operator[] (int idx) const;
 	
-	inline const double getRows() const { return _rows; }	//nie trzeba dodawaæ inline
+	inline const double getRows() const { return _rows; }	//nie trzeba dodawaÄ‡ inline
 	inline const double getColumns() const { return _columns; }
 	const double getMaxElement() const;
 
@@ -45,6 +45,7 @@ public:
 
 	static void showSimpleEquation(const Matrix& matrix_a, const Matrix& matrix_b, char sign, const Matrix& matrix_result);
 	static void showSimpleEquation(const Matrix& matrix_a, const double y[], const double c[]=nullptr);
+	void showInLatexForm();	// funkcja pomocnicza, do automatycznego jej wypisania w formie zgodnej z Latex'em
 	friend std::ostream& operator<< (std::ostream& stream, const Matrix& matrix);
 private:
 	int _rows, _columns;
