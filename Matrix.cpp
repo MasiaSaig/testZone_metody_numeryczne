@@ -63,7 +63,7 @@ Matrix Matrix::operator-(const Matrix& matrix_a)
 Matrix Matrix::operator*(const Matrix& matrix_a)
 {
     assert((this->_columns == matrix_a._rows) && "Rozmiary macierzy si� niezgadzaj�!");
-    Matrix temp(_rows, _columns);
+    Matrix temp(_rows, _columns, _output_precision+4);
     for (int i = 0; i < _rows; ++i) {
         
         for (int j = 0; j < _columns; ++j) {

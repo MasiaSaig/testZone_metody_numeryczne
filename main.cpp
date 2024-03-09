@@ -13,6 +13,7 @@ int main(){
 		}
 	}
 	cout << A;
+	A.showInLatexForm();
 	
 	Matrix L, U;
 	double wyznacznik_A = A.rozkladLU(L, U);
@@ -35,9 +36,10 @@ int main(){
 			x_o.push_back(0);
 		}
 		x_o[i] = 1;
-		A.eliminacjaGaussaJordana(X[i], x_o);
+		U.eliminacjaGaussaJordana(X[i], x_o);
 	}
 	// w macierzy X, poziomo są wiersze, a pionowo kolumny, dlatego trzeba ją 'obrócić' podczas wypisywania
+	cout << "Macierz odwrócona A, czyli macierz X: " << endl;
 	for (int j = 0; j < X.getColumns(); ++j) {
 		cout << "|";
 		for (int i = 0; i < X.getRows(); ++i) {
@@ -45,6 +47,18 @@ int main(){
 		}
 		cout << "|" << endl;
 	}
+	// wypisanie macierzy X tylko w formie dla Latex'u
+	for (int j = 0; j < X.getColumns(); ++j) {
+		for (int i = 0; i < X.getRows(); ++i) {
+			cout << X[i][j] << " & ";
+		}
+		cout << "\\\\" << endl;
+	}
+
+	// iloczyn macierzy przez jej odwrotność, powinnien dać macierz jednostkową (przybliżoną)
+	cout << "Iloczyn macierze A i A^(-1):" << endl;
+	cout << A * X;
+	(A * X).showInLatexForm();
 
 	// wskaźnik uwarunkowania macierzy
 	// dla normy: ||A|| = max(a_ij) - oznacza to, największy wyraz w macierzy
