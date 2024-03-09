@@ -13,21 +13,19 @@ int main(){
 		}
 	}
 	cout << A;
-	A.showInLatexForm();
 	
 	Matrix L, U;
 	double wyznacznik_A = A.rozkladLU(L, U);
 	cout << "Macierz A: \n" << A;
 	cout << "Macierz L: \n" << L;
-	L.showInLatexForm();
 	cout << "Macierz U: \n" << U;
-	U.showInLatexForm();
-	cout << "Wyznacznik macierzy A, rowna sie " << wyznacznik_A << '.' << endl;
+	cout << "Wyznacznik macierzy A, rowna sie " << wyznacznik_A << endl;
 
 	// obliczenie macierzy A^(-1)
 	// ustawianie wektorów x1, x2, x3, ...
 	// X - będzie macierzą odwrotności
 	Matrix X = A;
+	cout << X;
 	X.setToUnitMatrix();
 
 	for (int i = 0; i < A.getRows(); ++i) {
@@ -36,10 +34,11 @@ int main(){
 			x_o.push_back(0);
 		}
 		x_o[i] = 1;
-		U.eliminacjaGaussaJordana(X[i], x_o);
+		A.eliminacjaGaussaJordana(X[i], x_o);
 	}
 	// w macierzy X, poziomo są wiersze, a pionowo kolumny, dlatego trzeba ją 'obrócić' podczas wypisywania
-	cout << "Macierz odwrócona A, czyli macierz X: " << endl;
+	cout << "Macierz odwrocona A, czyli macierz X: " << endl;
+	cout << X;
 	for (int j = 0; j < X.getColumns(); ++j) {
 		cout << "|";
 		for (int i = 0; i < X.getRows(); ++i) {
@@ -48,17 +47,17 @@ int main(){
 		cout << "|" << endl;
 	}
 	// wypisanie macierzy X tylko w formie dla Latex'u
-	for (int j = 0; j < X.getColumns(); ++j) {
+	/*for (int j = 0; j < X.getColumns(); ++j) {
 		for (int i = 0; i < X.getRows(); ++i) {
 			cout << X[i][j] << " & ";
 		}
 		cout << "\\\\" << endl;
-	}
+	}*/
 
 	// iloczyn macierzy przez jej odwrotność, powinnien dać macierz jednostkową (przybliżoną)
 	cout << "Iloczyn macierze A i A^(-1):" << endl;
 	cout << A * X;
-	(A * X).showInLatexForm();
+	//(A * X).showInLatexForm();
 
 	// wskaźnik uwarunkowania macierzy
 	// dla normy: ||A|| = max(a_ij) - oznacza to, największy wyraz w macierzy

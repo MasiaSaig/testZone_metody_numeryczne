@@ -10,6 +10,7 @@ public:
 	//~Matrix();
 	Matrix(int rows=0, int cols=0,  int precision=5);
 	Matrix(const Matrix& matrix);
+	Matrix(Matrix&& matrix);
 	template <size_t r, size_t c>
 	Matrix(const double (&array)[r][c]) : Matrix(r,c) {
 		*this = array;
@@ -24,10 +25,11 @@ public:
 		}
 		return *this;
 	}
-	Matrix& operator= (const Matrix& matrix_a);
-	Matrix operator+ (const Matrix& matrix_a);
-	Matrix operator- (const Matrix& matrix_a);
-	Matrix operator* (const Matrix& matrix_a);
+	Matrix& operator= (Matrix const & matrix);
+	Matrix& operator= (Matrix&& matrix);
+	Matrix operator+ (Matrix const & matrix);
+	Matrix operator- (Matrix const & matrix);
+	Matrix operator* (Matrix const & matrix);
 
 	std::vector<double>& operator[] (int idx);
 	const std::vector<double>& operator[] (int idx) const;
