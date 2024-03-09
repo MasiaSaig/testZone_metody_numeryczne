@@ -61,7 +61,7 @@ Matrix Matrix::operator+(const Matrix& obj)
 }
 Matrix Matrix::operator-(const Matrix& obj)
 {
-    assert((this->_rows == obj._rows && this->_columns == obj._columns) && "Rozmiary macierzy si� niezgadzaj�!");
+    assert((this->_rows == obj._rows && this->_columns == obj._columns) && "Rozmiary macierzy sie niezgadzaja!");
     Matrix temp(_rows, _columns);
     for (int i = 0; i < _rows; ++i) {
         for (int j = 0; j < _columns; ++j) {
@@ -72,8 +72,8 @@ Matrix Matrix::operator-(const Matrix& obj)
 }
 Matrix Matrix::operator*(const Matrix& obj)
 {
-    assert((this->_columns == obj._rows) && "Rozmiary macierzy si� niezgadzaj�!");
-    Matrix temp(_rows, _columns, _output_precision+4);
+    assert((this->_columns == obj._rows) && "Rozmiary macierzy sie niezgadzaja!");
+    Matrix temp(_rows, obj._columns, (_output_precision > obj._output_precision) ? _output_precision : obj._output_precision);
     for (int i = 0; i < _rows; ++i) {
         
         for (int j = 0; j < _columns; ++j) {
