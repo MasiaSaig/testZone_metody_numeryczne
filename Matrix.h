@@ -10,6 +10,7 @@ public:
 	//~Matrix();
 	Matrix(int rows=0, int cols=0,  int precision=5);
 	Matrix(const Matrix& matrix);
+	Matrix(Matrix&& matrix);
 	template <size_t r, size_t c>
 	Matrix(const double (&array)[r][c]) : Matrix(r,c) {
 		*this = array;
@@ -24,16 +25,18 @@ public:
 		}
 		return *this;
 	}
-	Matrix& operator= (const Matrix& matrix_a);
-	Matrix operator+ (const Matrix& matrix_a);
-	Matrix operator- (const Matrix& matrix_a);
-	Matrix operator* (const Matrix& matrix_a);
+	Matrix& operator= (Matrix const & matrix);
+	Matrix& operator= (Matrix&& matrix);
+	Matrix operator+ (Matrix const & matrix);
+	Matrix operator- (Matrix const & matrix);
+	Matrix operator* (Matrix const & matrix);
 
 	std::vector<double>& operator[] (int idx);
 	const std::vector<double>& operator[] (int idx) const;
 	
-	inline const double getRows() const { return _rows; }	//nie trzeba dodawaæ inline
+	inline const double getRows() const { return _rows; }	//nie trzeba dodawaÄ‡ inline
 	inline const double getColumns() const { return _columns; }
+	inline const double getPrecision() const { return _output_precision; }
 	const double getMaxElement() const;
 
 	void zeroOut();
@@ -45,6 +48,7 @@ public:
 
 	static void showSimpleEquation(const Matrix& matrix_a, const Matrix& matrix_b, char sign, const Matrix& matrix_result);
 	static void showSimpleEquation(const Matrix& matrix_a, const double y[], const double c[]=nullptr);
+	void showInLatexForm();	// funkcja pomocnicza, do automatycznego jej wypisania w formie zgodnej z Latex'em
 	friend std::ostream& operator<< (std::ostream& stream, const Matrix& matrix);
 private:
 	int _rows, _columns;

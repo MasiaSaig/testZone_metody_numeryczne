@@ -20,55 +20,66 @@ Matrix::Matrix(int rows, int cols, int precision) :
         _matrix.push_back(row);
     }
 }
-Matrix::Matrix(const Matrix& matrix) : 
-    _rows{matrix._rows}, 
-    _columns{matrix._columns}, 
-    _output_precision{matrix._output_precision}
+Matrix::Matrix(const Matrix& obj) : 
+    _rows{ obj._rows}, _columns{ obj._columns}, _output_precision{ obj._output_precision}
 {
-    _matrix.insert(_matrix.begin(), matrix._matrix.begin(), matrix._matrix.end());
+    _matrix.insert(_matrix.begin(), obj._matrix.begin(), obj._matrix.end());
+}
+Matrix::Matrix(Matrix&& obj) :
+    _rows{ std::move(obj._rows) }, _columns{ std::move(obj._rows) }, _output_precision{ std::move(obj._output_precision) }
+{
+    _matrix = std::move(obj._matrix);
+    // for (int i = 0; i < _rows; ++i) { _matrix[i] = std::move(obj._matrix[i]); }
 }
 
 Matrix& Matrix::operator= (const Matrix& obj) {
-    if (this != &obj) {
-        _rows = obj._rows;
-        _columns = obj._columns;
-        _matrix.insert(_matrix.begin(), obj._matrix.begin(), obj._matrix.end());
-    }
-	return *this;
+    if (this == &obj) 
+        return *this;
+    _rows = obj._rows;
+    _columns = obj._columns;
+    _output_precision = obj._output_precision;
+    _matrix.insert(_matrix.begin(), obj._matrix.begin(), obj._matrix.end());
 }
-
-Matrix Matrix::operator+(const Matrix& matrix_a)
+Matrix& Matrix::operator= (Matrix&& obj) {
+    if (this == &obj)
+        return *this;
+    _rows = std::move(obj._rows);
+    _columns = std::move(obj._columns);
+    _output_precision = std::move(obj._output_precision);
+    _matrix = std::move(obj._matrix);
+}
+Matrix Matrix::operator+(const Matrix& obj)
 {
-    assert((this->_rows == matrix_a._rows && this->_columns == matrix_a._columns) && "Rozmiary macierzy si� niezgadzaj�!");
+    assert((this->_rows == obj._rows && this->_columns == obj._columns) && "Rozmiary macierzy sie niezgadzaja!");
     Matrix temp(_rows, _columns);
     for (int i = 0; i < _rows; ++i) {
         for (int j = 0; j < _columns; ++j) {
-            _matrix[i][j] = this->_matrix[i][j] + matrix_a._matrix[i][j];
+            _matrix[i][j] = this->_matrix[i][j] + obj._matrix[i][j];
         }
     }
     return temp;
 }
-Matrix Matrix::operator-(const Matrix& matrix_a)
+Matrix Matrix::operator-(const Matrix& obj)
 {
-    assert((this->_rows == matrix_a._rows && this->_columns == matrix_a._columns) && "Rozmiary macierzy si� niezgadzaj�!");
+    assert((this->_rows == obj._rows && this->_columns == obj._columns) && "Rozmiary macierzy sie niezgadzaja!");
     Matrix temp(_rows, _columns);
     for (int i = 0; i < _rows; ++i) {
         for (int j = 0; j < _columns; ++j) {
-            _matrix[i][j] = this->_matrix[i][j] - matrix_a._matrix[i][j];
+            _matrix[i][j] = this->_matrix[i][j] - obj._matrix[i][j];
         }
     }
     return temp;
 }
-Matrix Matrix::operator*(const Matrix& matrix_a)
+Matrix Matrix::operator*(const Matrix& obj)
 {
-    assert((this->_columns == matrix_a._rows) && "Rozmiary macierzy si� niezgadzaj�!");
-    Matrix temp(_rows, _columns);
+    assert((this->_columns == obj._rows) && "Rozmiary macierzy sie niezgadzaja!");
+    Matrix temp(_rows, obj._columns, (_output_precision > obj._output_precision) ? _output_precision : obj._output_precision);
     for (int i = 0; i < _rows; ++i) {
         
         for (int j = 0; j < _columns; ++j) {
             double sum = 0;
             for (int k = 0; k < _columns; ++k) {
-                sum += this->_matrix[i][k] * matrix_a._matrix[k][j];
+                sum += this->_matrix[i][k] * obj._matrix[k][j];
             }
             temp._matrix[i][j] = sum;
         }
@@ -214,7 +225,15 @@ void Matrix::showSimpleEquation(const Matrix& matrix_a, const double y[], const 
     }
     cout << endl;
 }
-
+void Matrix::showInLatexForm() {
+    for (int i = 0; i < _rows; ++i) {
+        for (int j = 0; j < _columns; ++j) {
+            cout << _matrix[i][j] << " & ";
+        }
+        cout << "\\\\" << endl;
+    }
+    cout << endl;
+}
 std::ostream& operator<< (std::ostream& stream, const Matrix& matrix) {
     for (int i = 0; i < matrix._rows; ++i) {
         stream << "|";
