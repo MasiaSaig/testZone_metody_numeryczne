@@ -19,6 +19,6 @@ set(CMAKE_CXX_FLAGS_RELEASE_INIT "-Wall")
 set(INCLUDES ${PROJECT_SOURCE_DIR}/include)
 include_directories(${INCLUDES})
 
-file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
+file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/*.cpp")
 
 add_executable(${PROJECT_NAME} main.cpp ${SOURCES})
