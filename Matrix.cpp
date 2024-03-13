@@ -39,6 +39,7 @@ Matrix& Matrix::operator= (const Matrix& obj) {
     _columns = obj._columns;
     _output_precision = obj._output_precision;
     _matrix.insert(_matrix.begin(), obj._matrix.begin(), obj._matrix.end());
+    return *this;
 }
 Matrix& Matrix::operator= (Matrix&& obj) {
     if (this == &obj)
@@ -47,6 +48,7 @@ Matrix& Matrix::operator= (Matrix&& obj) {
     _columns = std::move(obj._columns);
     _output_precision = std::move(obj._output_precision);
     _matrix = std::move(obj._matrix);
+    return *this;
 }
 Matrix Matrix::operator+(const Matrix& obj)
 {
