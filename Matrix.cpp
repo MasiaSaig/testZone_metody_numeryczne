@@ -74,7 +74,7 @@ Matrix Matrix::operator-(const Matrix& obj)
 }
 Matrix Matrix::operator*(const Matrix& obj)
 {
-    assert((this->_columns == obj._rows) && "Rozmiary macierzy sie niezgadzaja!");
+    assert((this->_columns == obj._rows) && "Blad mnozenia macierzy: Rozmiary macierzy sie niezgadzaja!");
     Matrix temp(_rows, obj._columns, (_output_precision > obj._output_precision) ? _output_precision : obj._output_precision);
     for (int i = 0; i < _rows; ++i) {
         
@@ -121,12 +121,6 @@ void Matrix::setToUnitMatrix() {
             else _matrix[i][j] = 0;
         }
     }
-}
-void Matrix::clear() {
-    for (int i = 0; i < _rows; ++i) {
-        _matrix[i].clear();
-    }
-    _matrix.clear();
 }
 
 void Matrix::eliminacjaGaussaJordana(std::vector<double>& c, std::vector<double> y) const {
@@ -178,7 +172,31 @@ double Matrix::rozkladLU(Matrix& L, Matrix& U) const {
     }
     return determinant;
 }
-    
+void Matrix::invertMatrix(){
+    // obliczenie macierzy A^(-1)
+    // ustawianie wektorów x1, x2, x3, ...
+    // X - będzie macierzą odwrotności
+    Matrix A_inverted(*this);
+
+    for (int j = 0; j < _columns; ++j) {
+        std::vector<double> a; // j-ta kolumna macierzy A
+        for (int i = 0; i < _rows; ++i) {
+            a.push_back(A_inverted[i][j]);
+        }
+        std::vector<double> x; // j-ta kolumna macierzy jednostkowej X
+        for (int i = 0; i < _rows; ++i) {
+            x.push_back(0);
+        }
+        x[j] = 1;
+
+        A_inverted.eliminacjaGaussaJordana(a, x);
+        // wypełnianie kolumny
+        for (int i = 0; i < _rows; ++i) {
+            _matrix[i][j] = a[i];
+        }
+    }
+}
+
 
 void Matrix::showSimpleEquation(const Matrix& matrix_a, const Matrix& matrix_b, char sign, const Matrix& matrix_result) {
     int rows = matrix_a._rows;

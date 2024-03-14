@@ -34,19 +34,25 @@ public:
 	std::vector<double>& operator[] (int idx);
 	const std::vector<double>& operator[] (int idx) const;
 	
+	// getters
 	inline const double getRows() const { return _rows; }	//nie trzeba dodawać inline
 	inline const double getColumns() const { return _columns; }
 	inline const double getPrecision() const { return _output_precision; }
 	const double getMaxElement() const;
 
+	// setters
 	void zeroOut();
 	void setToUnitMatrix();
-	void clear();
 
+	// more complex functions
 	void eliminacjaGaussaJordana(std::vector<double>& c, std::vector<double> y) const;
 	double rozkladLU(Matrix& L, Matrix& U) const; // zwraca wyznacznik macierzy
+	void invertMatrix(); // odwraca aktualna macierz
 
+	// output functions
+	// A _sign_ B = C
 	static void showSimpleEquation(const Matrix& matrix_a, const Matrix& matrix_b, char sign, const Matrix& matrix_result);
+	// A _sign \vec{b} = \vec{c}
 	static void showSimpleEquation(const Matrix& matrix_a, const double y[], const double c[]=nullptr);
 	void showInLatexForm();	// funkcja pomocnicza, do automatycznego jej wypisania w formie zgodnej z Latex'em
 	friend std::ostream& operator<< (std::ostream& stream, const Matrix& matrix);

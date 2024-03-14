@@ -5,7 +5,7 @@ using namespace std;
 
 #define N 4
 
-int main(){
+int main() {
 	Matrix A(N, N, 10);
 	for (int i = 0; i < A.getRows(); ++i) {
 		for (int j = 0; j < A.getColumns(); ++j) {
@@ -13,7 +13,7 @@ int main(){
 		}
 	}
 	cout << A;
-	
+
 	Matrix L, U;
 	double wyznacznik_A = A.rozkladLU(L, U);
 	cout << "Macierz A: \n" << A;
@@ -58,6 +58,11 @@ int main(){
 	cout << "Iloczyn macierze A i A^(-1):" << endl;
 	cout << A * X;
 	//(A * X).showInLatexForm();
+
+	cout << A;
+	A.invertMatrix();
+	cout << A;
+	
 
 	// wskaźnik uwarunkowania macierzy
 	// dla normy: ||A|| = max(a_ij) - oznacza to, największy wyraz w macierzy
