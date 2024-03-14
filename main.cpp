@@ -59,11 +59,6 @@ int main() {
 	cout << A * X;
 	//(A * X).showInLatexForm();
 
-	cout << A;
-	A.invertMatrix();
-	cout << A;
-	
-
 	// wskaźnik uwarunkowania macierzy
 	// dla normy: ||A|| = max(a_ij) - oznacza to, największy wyraz w macierzy
 	// wsk_uwarunk = ||A|| * ||A^(-1)||
