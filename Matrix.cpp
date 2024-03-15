@@ -11,11 +11,11 @@ using std::setw;
 Matrix::Matrix(int rows, int cols, int precision) :
 	_rows{rows}, _columns{cols}, _output_precision{precision}
 {
-    // uzupe�nia macierz jedynkami
+    // uzupelnia macierz zerami
     for (int i = 0; i < _rows; ++i) {
         std::vector<double> row;
         for (int j = 0; j < _columns; ++j) {
-            row.push_back(1);
+            row.push_back(0);
         }
         _matrix.push_back(row);
     }
@@ -53,10 +53,10 @@ Matrix& Matrix::operator= (Matrix&& obj) {
 Matrix Matrix::operator+(const Matrix& obj)
 {
     assert((this->_rows == obj._rows && this->_columns == obj._columns) && "Rozmiary macierzy sie niezgadzaja!");
-    Matrix temp(_rows, _columns);
+    Matrix temp = *this;
     for (int i = 0; i < _rows; ++i) {
         for (int j = 0; j < _columns; ++j) {
-            _matrix[i][j] = this->_matrix[i][j] + obj._matrix[i][j];
+            temp._matrix[i][j] += obj._matrix[i][j];
         }
     }
     return temp;
@@ -64,10 +64,10 @@ Matrix Matrix::operator+(const Matrix& obj)
 Matrix Matrix::operator-(const Matrix& obj)
 {
     assert((this->_rows == obj._rows && this->_columns == obj._columns) && "Rozmiary macierzy sie niezgadzaja!");
-    Matrix temp(_rows, _columns);
+    Matrix temp = *this;
     for (int i = 0; i < _rows; ++i) {
         for (int j = 0; j < _columns; ++j) {
-            _matrix[i][j] = this->_matrix[i][j] - obj._matrix[i][j];
+            temp._matrix[i][j] -= obj._matrix[i][j];
         }
     }
     return temp;
@@ -77,13 +77,21 @@ Matrix Matrix::operator*(const Matrix& obj)
     assert((this->_columns == obj._rows) && "Blad mnozenia macierzy: Rozmiary macierzy sie niezgadzaja!");
     Matrix temp(_rows, obj._columns, (_output_precision > obj._output_precision) ? _output_precision : obj._output_precision);
     for (int i = 0; i < _rows; ++i) {
-        
-        for (int j = 0; j < _columns; ++j) {
+        for (int j = 0; j < obj._columns; ++j) {
             double sum = 0;
             for (int k = 0; k < _columns; ++k) {
                 sum += this->_matrix[i][k] * obj._matrix[k][j];
             }
             temp._matrix[i][j] = sum;
+        }
+    }
+    return temp;
+}
+Matrix Matrix::operator* (double num) {
+    Matrix temp = *this;
+    for (int i = 0; i < _rows; ++i) {
+        for (int j = 0; j < _columns; ++j) {
+            temp._matrix[i][j] *= num;
         }
     }
     return temp;
@@ -195,6 +203,15 @@ void Matrix::invertMatrix(){
             _matrix[i][j] = a[i];
         }
     }
+}
+Matrix Matrix::transpose() {
+    Matrix temp(_columns, _rows);
+    for (int i = 0; i < temp.getRows(); ++i) {
+        for (int j = 0; j < temp.getColumns(); ++j) {
+            temp._matrix[i][j] = _matrix[j][i];
+        }
+    }
+    return temp;
 }
 
 

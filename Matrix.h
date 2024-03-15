@@ -30,6 +30,7 @@ public:
 	Matrix operator+ (Matrix const & matrix);
 	Matrix operator- (Matrix const & matrix);
 	Matrix operator* (Matrix const & matrix);
+	Matrix operator* (double num);
 
 	std::vector<double>& operator[] (int idx);
 	const std::vector<double>& operator[] (int idx) const;
@@ -48,6 +49,7 @@ public:
 	void eliminacjaGaussaJordana(std::vector<double>& c, std::vector<double> y) const;
 	double rozkladLU(Matrix& L, Matrix& U) const; // zwraca wyznacznik macierzy
 	void invertMatrix(); // odwraca aktualna macierz
+	Matrix transpose();
 
 	// output functions
 	// A _sign_ B = C
