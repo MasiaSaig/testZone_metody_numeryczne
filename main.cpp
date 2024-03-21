@@ -39,6 +39,9 @@ using std::sqrt;
 int main() {
 	const int n = 1000, m = 5;
 
+	for (int i = 0; i < 131; ++i) { cout << i << ','; }
+
+	cout << endl << endl;
 
 	Matrix A(n, n);
 	for (int i = 0; i < A.getRows(); ++i) {
@@ -80,14 +83,14 @@ int main() {
 		//cout << "alpha = " << a << endl;
 		x = x + (r * a);
 		//cout << "x:" << x << endl;
+		++iteracje;
 		war_normy_eukl_r = sqrt(abs((r.transpose() * r)[0][0]));
 		war_normy_eukl_x = sqrt(abs((x.transpose() * x)[0][0]));
-		 cout << iteracje << " & " << war_normy_eukl_r << " & " << a << 
-			 " & " << war_normy_eukl_x << "\\\\ \\hline" << endl;
-		++iteracje;
+		 cout << iteracje << ";" << war_normy_eukl_r << ";" << a << 
+			 ";" << war_normy_eukl_x << endl;
 	} while (abs(war_normy_eukl_r) > 0.000001);
 
-	cout << endl << "Iteracje: " << iteracje << " dla x = 0" << endl << endl;
+	//cout << endl << "Iteracje: " << iteracje << " dla x = 0" << endl << endl;
 
 
 // Metoda najwiekszego spadku x = 1
@@ -100,10 +103,11 @@ int main() {
 		//Matrix mian = (r.transpose() * A * r);
 		a = (r.transpose() * r)[0][0] / (r.transpose() * A * r)[0][0];
 		x = x + (r * a);
+		++iteracje;
 		war_normy_eukl_r = sqrt(abs((r.transpose() * r)[0][0]));
 		war_normy_eukl_x = sqrt(abs((x.transpose() * x)[0][0]));
-		cout << iteracje << " & " << war_normy_eukl_r << " & " << a << " & " << war_normy_eukl_x << "\\\\ \\hline" << endl;
-		++iteracje;
+		cout << iteracje << ";" << war_normy_eukl_r << ";" << a <<
+			";" << war_normy_eukl_x << endl;
 	} while (abs(war_normy_eukl_r) > 0.000001);
 
 	cout << endl << "Iteracje: " << iteracje << " dla x = 1" << endl;
@@ -129,8 +133,8 @@ int main() {
 		beta = (r.transpose() * r)[0][0] / (temp_r.transpose() * temp_r)[0][0];
 		v = r + (v * beta);
 		++iteracje;
-		cout << iteracje << " & " << sqrt(abs((r.transpose() * r)[0][0])) << " & "
-			<< alpha << " & " << beta << " & " << sqrt(abs((x.transpose() * x)[0][0])) << endl;
+		cout << iteracje << ";" << sqrt(abs((r.transpose() * r)[0][0])) << ";"
+			<< alpha << ";" << beta << ";" << sqrt(abs((x.transpose() * x)[0][0])) << endl;
 	}
 	cout << endl << "Iteracje: " << iteracje << " dla x = 0" << endl;
 	

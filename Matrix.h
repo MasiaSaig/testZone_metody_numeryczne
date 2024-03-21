@@ -1,6 +1,5 @@
 #ifndef _MY_MATRIX_NUMERICAL_METHODS_H_
 #define _MY_MATRIX_NUMERICAL_METHODS_H_
-#pragma once
 
 #include <vector>
 #include <iostream>
