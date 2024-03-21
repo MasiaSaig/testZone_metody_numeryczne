@@ -49,7 +49,7 @@ public:
 	void eliminacjaGaussaJordana(std::vector<double>& c, std::vector<double> y) const;
 	double rozkladLU(Matrix& L, Matrix& U) const; // zwraca wyznacznik macierzy
 	void invertMatrix(); // odwraca aktualna macierz
-	Matrix transpose();
+	Matrix transpose() const;
 
 	// output functions
 	// A _sign_ B = C

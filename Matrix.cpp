@@ -204,7 +204,7 @@ void Matrix::invertMatrix(){
         }
     }
 }
-Matrix Matrix::transpose() {
+Matrix Matrix::transpose() const {
     Matrix temp(_columns, _rows);
     for (int i = 0; i < temp.getRows(); ++i) {
         for (int j = 0; j < temp.getColumns(); ++j) {
