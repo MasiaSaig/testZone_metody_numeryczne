@@ -1,30 +1,27 @@
 /*
-sprawozdanie - sprzężonych gradientów i największego spadku
-ćwiczenia - metoda największego spadku
 
-wektor reszty: Ax_k - b = 0;
+(h_11 h_12 ... )
+(h_21 h_22 ... )
+( ...   	   )
 
-funkcja gradientu
-Q = 1/2 * x^T * A*x - x^T * b
-grad(Q) = Ax - b
+w_0=1
+w_1=h_11 - lamb
+w_2 = (h_22 - lamb)w_k-1 +(h_12)^2w_k-2
 
-x_k+1 = x_k + a*v_k
-v_k = grad(Q) = -r_k - wektor reszt
-r_k = b-Ax_k
+ile wartości wlasnych mniejszych ni lamb
 
-x_k+1 = x_k + a
+życie metody bisekcji
 
-a = (r^T * r) / (r^T * Ar) - alpha mowi jak daleko idziemy w stronę gradientu
-
-do{}
-while((||r_k+1||-||r_k||) > tolerancja)
-
-wykres reszt zalezny od iteracji
+liczba zmian znaków oznaza ilosc wartości mnijszych niż lamb
+ jeśli wieksza jest liczba wartosci własnych niż liczba zmian znaków, to idziemy do lewego
+jeśli mniejsza lub równa, to idzeimy do prawego
 
 
 
+szukamy najwiekszej sumy || wiersza
 
-metoda bisekcji - pozwala okreslone własności własne
+
+metoda ?householdera? - transform macierzy do posatci trójdiagonalnej, zależnie czy jest symetralna
 */
 
 #include "Matrix.h"
@@ -33,110 +30,82 @@ metoda bisekcji - pozwala okreslone własności własne
 #include <math.h>
 using namespace std;
 
+
 using std::abs;
-using std::sqrt;
 
 int main() {
-	const int n = 1000, m = 5;
+	const int N = 5, IT_MAX=50;
+	double L=5;
+	//double L = 10;
 
-	for (int i = 0; i < 131; ++i) { cout << i << ','; }
+	double delta_x = ((2.0*L) / static_cast<double>(N));
 
-	cout << endl << endl;
+	Matrix A(N,N);
+	//A.zeroOut();
+	for(int i=1; i<N; ++i){
+		double val = -1.0 / (2.0*delta_x*delta_x); 
+		A[i][i-1] = val;
+		A[i-1][i] = val;
+	}
+	for(int i=0; i<N; ++i){
+		A[i][i] = (1.0 / (delta_x * delta_x)) + ((i*delta_x - L)*(i*delta_x - L) / 2.0);
+	}
 
-	Matrix A(n, n);
-	for (int i = 0; i < A.getRows(); ++i) {
-		for (int j = 0; j < A.getColumns(); ++j) {
-			if (abs(i - j) <= m) {
-				A[i][j] = 1.0 / (1.0 + abs(i - j));
-			}
-			else {
-				A[i][j] = 0;
-			}
+	std::cout << A;
+
+	const int K = 3;
+	// szukanie maksymanej wartości, do stworzenia przedziału
+	double S=A[0][0];
+	for(int i=0; i<N; ++i){
+		double suma = 0;
+		for(int j=0; j<N; ++j){
+			suma += abs(A[i][j]);
 		}
+		if(suma >= S) S=suma;
 	}
 
-	Matrix b(n, 1);
-	for (int i = 0; i < n; ++i) { b[i][0] = i; }
-	//cout << "b:" << b << endl;
-
-// Metoda najwiekszego spadku x = 0
-	Matrix x(n, 1);
-	Matrix r(n, 1);
-	double a, war_normy_eukl_r, war_normy_eukl_x;
-	for (int i = 0; i < n; ++i) { x[i][0] = 0; }
-	//cout << "x:" << x << endl;
-
-
-	//Matrix B({{1,2}, {3,4}});
-	//cout << "B:" << B << endl;
-	int iteracje = 0;
-	do {
-		war_normy_eukl_r = 0;
-		r = b - (A * x);
-		//cout << "r:" << r << endl;
-		//Matrix licz = (r.transpose() * r);
-		//Matrix mian = (r.transpose() * A * r);
-		//cout << "trans(r):" << endl << trans(r);
-		// wybieramy element [0][0] ponieważ wynik mnożenia tych macierzy 
-		// jest macierzą o jednym elemencie, czyli tak naprawdę liczbą
-		a = (r.transpose() * r)[0][0] / (r.transpose() * A * r)[0][0];
-		//cout << "alpha = " << a << endl;
-		x = x + (r * a);
-		//cout << "x:" << x << endl;
-		++iteracje;
-		war_normy_eukl_r = sqrt(abs((r.transpose() * r)[0][0]));
-		war_normy_eukl_x = sqrt(abs((x.transpose() * x)[0][0]));
-		 cout << iteracje << ";" << war_normy_eukl_r << ";" << a << 
-			 ";" << war_normy_eukl_x << endl;
-	} while (abs(war_normy_eukl_r) > 0.000001);
-
-	//cout << endl << "Iteracje: " << iteracje << " dla x = 0" << endl << endl;
-
-
-// Metoda najwiekszego spadku x = 1
-	for (int i = 0; i < n; ++i) { x[i][0] = 1; }
-
-	iteracje = 0;
-	do {
-		r = b - (A * x);
-		//Matrix licz = (r.transpose() * r);
-		//Matrix mian = (r.transpose() * A * r);
-		a = (r.transpose() * r)[0][0] / (r.transpose() * A * r)[0][0];
-		x = x + (r * a);
-		++iteracje;
-		war_normy_eukl_r = sqrt(abs((r.transpose() * r)[0][0]));
-		war_normy_eukl_x = sqrt(abs((x.transpose() * x)[0][0]));
-		cout << iteracje << ";" << war_normy_eukl_r << ";" << a <<
-			";" << war_normy_eukl_x << endl;
-	} while (abs(war_normy_eukl_r) > 0.000001);
-
-	cout << endl << "Iteracje: " << iteracje << " dla x = 1" << endl;
-
-
-// Metoda sprzezonych gradientow dla macierzy wstegowej
-	cout << "Metoda sprzezonych gradientow dla macierzy wstegowej" << endl;
-	for (int i = 0; i < n; ++i) { b[i][0] = i+1; }
-	for (int i = 0; i < n; ++i) { x[i][0] = 0; }
-	Matrix v(n, 1);
-
-	double alpha, beta;
-
-	//v = r = b - (A * x);
-	v = b;
-	r = b;
-	iteracje = 0;
-	while ((r.transpose() * r)[0][0] > 0.000001) {
-		alpha = (r.transpose() * r)[0][0] / (v.transpose() * A * v)[0][0];
-		x = x + (v * alpha);
-		Matrix temp_r = r;
-		r = r - ((A * v) * alpha);
-		beta = (r.transpose() * r)[0][0] / (temp_r.transpose() * temp_r)[0][0];
-		v = r + (v * beta);
-		++iteracje;
-		cout << iteracje << ";" << sqrt(abs((r.transpose() * r)[0][0])) << ";"
-			<< alpha << ";" << beta << ";" << sqrt(abs((x.transpose() * x)[0][0])) << endl;
-	}
-	cout << endl << "Iteracje: " << iteracje << " dla x = 0" << endl;
+	double l = -S;
+	double p = S;
+	double w[N]{};
+	// i-ta wartosc wlasna
+	double lambda = 0;	// (S+(-S)) / 2
 	
+	w[0] = 1; 
+	w[1] = A[0][0] - lambda;
+	
+	double wartosci_wlasne[N]{};
+	int zmiany_znaku;
+	std::cout << std::endl << "Lambdy: ";
+	for(int i=0; i<IT_MAX; ++i){
+		zmiany_znaku = 0;
+		for(int k=2; k<N; ++k){
+			w[k] = (A[k-1][k-1]-lambda)*w[k-1] - (A[k-1][k])*(A[k-1][k])*w[k-2];
+			if(w[k]*w[k-1] < 0) ++zmiany_znaku;	// dodaj 1, jeśli wystąpiła zmiana znaku
+			if (w[k] == 0) wartosci_wlasne[i] = lambda;
+		}
+		if (zmiany_znaku <= i) l = lambda;
+		else p = lambda;
+		lambda = (p + l) / 2;
+		std::cout << lambda << ", ";
+	}
+	std::cout << std::endl;
+	std::cout << std::endl << "Wartosc wlasna(lambda): " << lambda << std::endl;
+	// obliczanie (i-tego) wektora wlasnego z lambda
+	double x[N]{};
+	x[0] = 1;
+	x[1] = (lambda - A[0][0]) / A[1][0];
+	std::cout << "Wektor wlasny: " << x[0] << ',' << x[1] << ',';
+	for(int i=2; i<N; ++i){
+		x[i] = ((lambda - A[i][i])*x[i-1] - A[i-1][i-2]*x[i-2]) / A[i][i-1];
+		std::cout << x[i] << ',';
+	}
+	std::cout << std::endl << std::endl;
+	// unormowanie wektora
+	std::cout << "Wektor wlasny unormowany: ";
+	for (int i = 0; i < N; ++i) {
+		x[i] /= static_cast<double>(N);
+		std:cout << x[i] << ',';
+	}
+
 	return 0;
 }
